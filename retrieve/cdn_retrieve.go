@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth"
 	"github.com/qiniu/go-sdk/v7/sms/bytes"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -67,14 +67,12 @@ func getRequest(mac *auth.Credentials, path string, query interface{}) (resData 
 	reqData, _ := json.Marshal(query)
 	req, reqErr := http.NewRequest("GET", urlStr, bytes.NewReader(reqData))
 	if reqErr != nil {
-		err = reqErr
-		return
+		log.Fatal("请求参数异常", reqErr)
 	}
 
 	accessToken, signErr := mac.SignRequest(req)
 	if signErr != nil {
-		err = signErr
-		return
+		log.Fatal("获取认证失败", signErr)
 	}
 
 	req.Header.Add("Authorization", "QBox "+accessToken)
@@ -82,12 +80,11 @@ func getRequest(mac *auth.Credentials, path string, query interface{}) (resData 
 
 	resp, respErr := http.DefaultClient.Do(req)
 	if respErr != nil {
-		err = respErr
-		return
+		log.Fatal("请求失败", respErr)
 	}
 	defer resp.Body.Close()
 
-	resData, ioErr := ioutil.ReadAll(resp.Body)
+	resData, ioErr := io.ReadAll(resp.Body)
 	if ioErr != nil {
 		err = ioErr
 		return
@@ -101,14 +98,12 @@ func postRequest(mac *auth.Credentials, path string, body interface{}) (resData 
 	reqData, _ := json.Marshal(body)
 	req, reqErr := http.NewRequest("POST", urlStr, bytes.NewReader(reqData))
 	if reqErr != nil {
-		err = reqErr
-		return
+		log.Fatal("请求参数异常", reqErr)
 	}
 
 	accessToken, signErr := mac.SignRequest(req)
 	if signErr != nil {
-		err = signErr
-		return
+		log.Fatal("获取认证失败", signErr)
 	}
 
 	req.Header.Add("Authorization", "QBox "+accessToken)
@@ -116,12 +111,11 @@ func postRequest(mac *auth.Credentials, path string, body interface{}) (resData 
 
 	resp, respErr := http.DefaultClient.Do(req)
 	if respErr != nil {
-		err = respErr
-		return
+		log.Fatal("请求失败", respErr)
 	}
 	defer resp.Body.Close()
 
-	resData, ioErr := ioutil.ReadAll(resp.Body)
+	resData, ioErr := io.ReadAll(resp.Body)
 	if ioErr != nil {
 		err = ioErr
 		return

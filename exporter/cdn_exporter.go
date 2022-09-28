@@ -6,7 +6,7 @@ import (
 	"qiniu-exporter/retrieve"
 )
 
-const cdnNameSpace = "upyun"
+const cdnNameSpace = "qiniu"
 
 
 type cdnExporter struct {
@@ -32,7 +32,7 @@ func NewCdnExporter(domainList *[]string, credential *auth.Credentials, rangeTim
 
 		cdnHitRate: prometheus.NewDesc(
 			prometheus.BuildFQName(cdnNameSpace, "cdn", "hit_rate"),
-			"cdn缓存命中率(%)",
+			"cdn请求命中率(%)",
 			[]string{
 				"instanceId",
 			},
@@ -40,7 +40,7 @@ func NewCdnExporter(domainList *[]string, credential *auth.Credentials, rangeTim
 		),
 		cdnFluxHitRate: prometheus.NewDesc(
 			prometheus.BuildFQName(cdnNameSpace, "cdn", "flux_hit_rate"),
-			"cdn缓存字节命中率(%)",
+			"cdn字节命中率(%)",
 			[]string{
 				"instanceId",
 			},
