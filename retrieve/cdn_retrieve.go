@@ -149,8 +149,10 @@ func GetDomains(credential *auth.Credentials) []string {
 
 
 func GetBandWidth(credential *auth.Credentials, domain string, rangeTime int64, delayTime int64, granularity string) float64 {
-	startDate :=time.Now().Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02 15:04:05")
-	endDate := time.Now().Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02 15:04:05")
+	timeZone, _ := time.LoadLocation("Asia/Shanghai")
+	timeNow := time.Now().In(timeZone)
+	startDate := timeNow.Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02 15:04:05")
+	endDate := timeNow.Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02 15:04:05")
 	reqBody := map[string]interface{}{
 		"startDate":   startDate,
 		"endDate":     endDate,
@@ -185,8 +187,10 @@ func GetBandWidth(credential *auth.Credentials, domain string, rangeTime int64, 
 
 
 func GetHitMiss(credential *auth.Credentials, domain string, rangeTime int64, delayTime int64, granularity string) (hitRateAverage float64, fluxHitRateAverage float64){
-	startDate :=time.Now().Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02")
-	endDate := time.Now().Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02")
+	timeZone, _ := time.LoadLocation("Asia/Shanghai")
+	timeNow := time.Now().In(timeZone)
+	startDate := timeNow.Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02")
+	endDate := timeNow.Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02")
 	reqBody := map[string]interface{}{
 		"startDate":   startDate,
 		"endDate":     endDate,
@@ -228,8 +232,10 @@ func GetHitMiss(credential *auth.Credentials, domain string, rangeTime int64, de
 
 
 func GetStatusCode(credential *auth.Credentials, domain string, rangeTime int64, delayTime int64, granularity string) map[string]float64 {
-	startDate :=time.Now().Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02")
-	endDate := time.Now().Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02")
+	timeZone, _ := time.LoadLocation("Asia/Shanghai")
+	timeNow := time.Now().In(timeZone)
+	startDate := timeNow.Add(-time.Second * time.Duration(rangeTime)).Format("2006-01-02")
+	endDate := timeNow.Add(-time.Second * time.Duration(delayTime)).Format("2006-01-02")
 
 	reqBody := map[string]interface{}{
 		"startDate":   startDate,
