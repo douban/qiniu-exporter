@@ -18,6 +18,7 @@ var (
 )
 
 type domainResp struct {
+	Marker  string `json:"marker"`
 	Domains []struct{
 		Name string `json:"name"`
 		Type string `json:"type"`
@@ -125,25 +126,38 @@ func postRequest(mac *auth.Credentials, path string, body interface{}) (resData 
 
 
 func GetDomains(credential *auth.Credentials) []string {
-	queryBody := map[string]interface{}{
-		"Limit": 50,
-		"SourceTypes": []string{"domain"},
-	}
-	resp, err := getRequest(credential, "/domain", queryBody)
-	if err != nil {
-		log.Fatal("请求失败", err)
-	}
 	var (
 		domains    domainResp
 		domainList []string
 	)
-	errJson := json.Unmarshal(resp, &domains)
-	if errJson != nil {
-		log.Fatal("解析失败", errJson)
+
+	queryBody := map[string]interface{}{
+		"Limit":       50,
+		"SourceTypes": []string{"domain"},
 	}
-	for _, domain := range  domains.Domains{
-		domainList = append(domainList, domain.Name)
+
+	for {
+		resp, err := getRequest(credential, "/domain", queryBody)
+		if err != nil {
+			log.Fatal("request failure", err)
+		}
+
+		signErr := json.Unmarshal(resp, &domains)
+		if signErr != nil {
+			log.Println("parsing failure", signErr)
+		}
+
+		if len(domains.Marker) == 0 {
+			break
+		} else {
+			queryBody["Marker"] = domains.Marker
+		}
+
+		for _, v := range domains.Domains {
+			domainList = append(domainList, v.Name)
+		}
 	}
+
 	return domainList
 }
 
